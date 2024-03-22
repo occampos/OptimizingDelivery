@@ -1,0 +1,36 @@
+,customer_id,customer_name,city
+0,789201,Rel Fresh,Surat
+1,789202,Rel Fresh,Ahmedabad
+2,789203,Rel Fresh,Vadodara
+3,789301,Expression Stores,Surat
+4,789303,Expression Stores,Vadodara
+5,789101,Vijay Stores,Surat
+6,789102,Vijay Stores,Ahmedabad
+7,789103,Vijay Stores,Vadodara
+8,789121,Coolblue,Ahmedabad
+9,789122,Coolblue,Vadodara
+10,789220,Atlas Stores,Surat
+11,789221,Atlas Stores,Ahmedabad
+12,789320,Chiptec Stores,Surat
+13,789321,Chiptec Stores,Ahmedabad
+14,789401,Propel Mart,Surat
+15,789402,Propel Mart,Ahmedabad
+16,789403,Propel Mart,Vadodara
+17,789420,Lotus Mart,Surat
+18,789421,Lotus Mart,Ahmedabad
+19,789422,Lotus Mart,Vadodara
+20,789501,Viveks Stores,Surat
+21,789503,Viveks Stores,Vadodara
+22,789520,Acclaimed Stores,Surat
+23,789521,Acclaimed Stores,Ahmedabad
+24,789522,Acclaimed Stores,Vadodara
+25,789601,Info Stores,Surat
+26,789603,Info Stores,Vadodara
+27,789702,Sorefoz Mart,Ahmedabad
+28,789703,Sorefoz Mart,Vadodara
+29,789621,Expert Mart,Ahmedabad
+30,789622,Expert Mart,Vadodara
+31,789720,Logic Stores,Surat
+32,789721,Logic Stores,Ahmedabad
+33,789902,Elite Mart,Ahmedabad
+34,789903,Elite Mart,Vadodara
