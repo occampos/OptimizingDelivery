@@ -1,0 +1,174 @@
+﻿DEFINE 
+---- MODEL MEASURES BEGIN ----
+MEASURE Measuress[Bum] = 1
+MEASURE Measuress[Bum_2] = 2
+MEASURE Measuress[line_fill_rate] = AVERAGE(order_lines[line_fill_rate_pct])
+MEASURE Measuress[lines_if] = AVERAGE(order_lines[in_full])
+MEASURE Measuress[lines_ot] = AVERAGE(order_lines[on_time])
+MEASURE Measuress[lines_otif] = AVERAGE(order_lines[on_time_in_full])
+MEASURE Measuress[matrix_switch_orders_pct_diff] = ABS([matrix_switch_total_orders_targets] - [matrix_total_orders_pct])
+MEASURE Measuress[matrix_switch_total_orders] = 
+    SWITCH(
+        TRUE(),
+        SELECTEDVALUE('order_lines'[delivery_status]) = "On Time", 
+            CALCULATE(
+                DISTINCTCOUNT(order_lines[order_id]),
+                ALLEXCEPT(order_lines, order_lines[customer_name]),
+                order_lines[minimum_on_time_order] = 1
+            ),
+        SELECTEDVALUE('order_lines'[delivery_status]) = "In Full", 
+            CALCULATE(
+                DISTINCTCOUNT(order_lines[order_id]),
+                ALLEXCEPT(order_lines, order_lines[customer_name]),
+                order_lines[minimum_in_full_order] = 1
+            ),
+        SELECTEDVALUE('order_lines'[delivery_status]) = "Both", 
+            CALCULATE(
+                DISTINCTCOUNT(order_lines[order_id]),
+                ALLEXCEPT(order_lines, order_lines[customer_name]),
+                order_lines[minimum_on_time_order] = 1 && order_lines[minimum_in_full_order] = 1
+            ),
+        SELECTEDVALUE('order_lines'[delivery_status]) = "Neither",
+            CALCULATE(
+                DISTINCTCOUNT(order_lines[order_id]),
+                ALLEXCEPT(order_lines, order_lines[customer_name]),
+                order_lines[minimum_on_time_order] = 0 && order_lines[minimum_in_full_order] = 0
+            ),
+        0 
+    )
+MEASURE Measuress[matrix_switch_total_orders_targets] = 
+    SWITCH(
+        TRUE(),
+        SELECTEDVALUE('order_lines'[delivery_status]) = "On Time", 
+            CALCULATE(
+                AVERAGEX(
+                    FILTER(
+                        order_lines,
+                        order_lines[customer_name] = order_lines[customer_name]
+                    ),
+                    RELATED(target_orders[on_time_target])
+                ),
+                ALLEXCEPT(order_lines, order_lines[customer_name])
+            ),
+        SELECTEDVALUE('order_lines'[delivery_status]) = "In Full", 
+            CALCULATE(
+                AVERAGEX(
+                    FILTER(
+                        order_lines,
+                        order_lines[customer_name] = order_lines[customer_name]
+                    ),
+                    RELATED(target_orders[in_full_target])
+                ),
+                ALLEXCEPT(order_lines, order_lines[customer_name])
+            ),
+        SELECTEDVALUE('order_lines'[delivery_status]) = "Both", 
+            CALCULATE(
+                AVERAGEX(
+                    FILTER(
+                        order_lines,
+                        order_lines[customer_name] = order_lines[customer_name]
+                    ),
+                    RELATED(target_orders[on_time_in_full_target])
+                ),
+                ALLEXCEPT(order_lines, order_lines[customer_name])
+            ),
+        SELECTEDVALUE('order_lines'[delivery_status]) = "Neither",
+            [orders_neither_target],
+        0 
+    )
+MEASURE Measuress[matrix_total_orders] = 
+    CALCULATE(
+        DISTINCTCOUNT(order_lines[order_id]),
+        ALLEXCEPT(order_lines, order_lines[customer_name])
+    )
+MEASURE Measuress[matrix_total_orders_pct] = DIVIDE([matrix_switch_total_orders], [matrix_total_orders])
+MEASURE Measuress[orders_if] = 
+CALCULATE(
+    DISTINCTCOUNT(order_lines[order_id]),
+    order_lines[minimum_in_full_order] = 1
+)
+MEASURE Measuress[orders_if_diff] = [orders_if_target] - [orders_if_pct]
+MEASURE Measuress[orders_if_pct] = 
+DIVIDE(
+    [orders_if],
+    CALCULATE(
+        DISTINCTCOUNT(order_lines[order_id])
+    )
+)
+MEASURE Measuress[orders_if_target] = AVERAGE(target_orders[in_full_target])
+MEASURE Measuress[orders_neither] = 
+CALCULATE(
+    DISTINCTCOUNT(order_lines[order_id]),
+    order_lines[minimum_on_time_order] = 0 && order_lines[minimum_in_full_order] = 0
+)
+MEASURE Measuress[orders_neither_diff] = ABS([orders_neither_target] - [orders_neither_pct])
+MEASURE Measuress[orders_neither_pct] = 
+DIVIDE(
+    [orders_neither],
+    CALCULATE(
+        DISTINCTCOUNT(order_lines[order_id])
+    )
+)
+MEASURE Measuress[orders_neither_target] = 0.05
+MEASURE Measuress[orders_only_if] = 
+CALCULATE(
+    DISTINCTCOUNT(order_lines[order_id]),
+    order_lines[minimum_on_time_order] = 0 && order_lines[minimum_in_full_order] = 1
+)
+MEASURE Measuress[orders_only_ot] = 
+CALCULATE(
+    DISTINCTCOUNT(order_lines[order_id]),
+    order_lines[minimum_on_time_order] = 1 && order_lines[minimum_in_full_order] = 0
+)
+MEASURE Measuress[orders_ot] = 
+CALCULATE(
+    DISTINCTCOUNT(order_lines[order_id]),
+    order_lines[minimum_on_time_order] = 1
+)
+MEASURE Measuress[orders_ot_diff] = [orders_ot_target] - [orders_ot_pct]
+MEASURE Measuress[orders_ot_pct] = 
+DIVIDE(
+    [orders_ot],
+    CALCULATE(
+        DISTINCTCOUNT(order_lines[order_id])
+    )
+)
+MEASURE Measuress[orders_ot_target] = AVERAGE(target_orders[on_time_target])
+MEASURE Measuress[orders_otif] = 
+CALCULATE(
+    DISTINCTCOUNT(order_lines[order_id]),
+    order_lines[minimum_on_time_order] = 1 && order_lines[minimum_in_full_order] = 1
+)
+MEASURE Measuress[orders_otif_diff] = [orders_otif_target] - [orders_otif_pct]
+MEASURE Measuress[orders_otif_pct] = 
+DIVIDE(
+    [orders_otif],
+    CALCULATE(
+        DISTINCTCOUNT(order_lines[order_id])
+    )
+)
+MEASURE Measuress[orders_otif_target] = AVERAGE(target_orders[on_time_in_full_target])
+MEASURE Measuress[total_lines] = COUNT(order_lines[order_id])
+MEASURE Measuress[total_lines_pct] = 
+DIVIDE(
+    COUNT(
+        order_lines[order_id]),
+    CALCULATE(
+        COUNT(order_lines[order_id]),
+        ALL(order_lines)
+    )
+)
+MEASURE Measuress[total_orders] = DISTINCTCOUNT(order_lines[order_id])
+MEASURE Measuress[total_orders_pct] = 
+ROUND(
+    DIVIDE(
+        DISTINCTCOUNT(order_lines[order_id]),
+        CALCULATE(
+            DISTINCTCOUNT(order_lines[order_id]),
+            ALL(order_lines)
+        )
+    ),
+4)
+MEASURE Measuress[volume_fill_rate] = AVERAGE(order_lines[volumne_fill_rate_pct])
+---- MODEL MEASURES END ----
+
